@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toss Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: #000000;
+        }
+
+        .status-bar-time {
+            font-weight: 600;
+        }
+
+        .status-bar-right {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .growth-positive {
+            color: #ef4444;
+            margin-left: 8px;
+        }
+
+
+        .container {
+            max-width: 100%;
+            padding: 0 16px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            margin-bottom: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-left img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .notification-badge {
+            position: relative;
+        }
+
+        .notification-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 6px;
+            height: 6px;
+            background-color: #FF4B4B;
+            border-radius: 50%;
+        }
+
+        .card {
+            background-color: #1C1C1E;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .tossbank-section {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .account-list {
+            padding: 8px 16px;
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        .account-info {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .account-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+   
+        }
+
+        .account-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+
+        .account-amount {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .account-name {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .send-button {
+            background-color: #2C2C2E;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .bottom-stats {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+        }
+
+        .money-spent {
+            padding: 20px 12px;
+        }
+
+        .money-spent-amount {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .money-spent-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .new-transaction {
+            position: absolute;
+            right: 16px;
+            top: 20px;
+            background-color: #2C2C2E;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .suggestion-section {
+            margin-top: 24px;
+        }
+
+        .date-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .suggestion-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+
+        }
+
+        .action-button {
+            flex: 1;
+            background-color: #1C1C1E;
+            border: none;
+            padding: 12px;
+            border-radius: 14px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 26px;
+            font-size: 16px;
+            justify-content: center;
+
+        }
+
+        .menu-list {
+            background-color: #1C1C1E;
+            border-radius: 14px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #000000;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .tab-item.active {
+            color: white;
+        }
+
+        .investment-change {
+            color: #4785FF;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+
+
+        <div class="card">
+            <div class="tossbank-section">
+                <span>토스뱅크</span>
+                <img src="fx.png" alt="더보기" width="16" height="16">
+            </div>
+        </div>
+
+        <div class="card">
+
+
+
+            <div class="account-list">
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="account-icon">
+                            <img src="t1.png" alt="토스" width="42" height="42">
+                        </div>
+                        <div class="account-details">
+                            <span class="account-amount">6,263,713,131원</span>
+                            <span class="account-name">토스증권 계좌</span>
+                        </div>
+                    </div>
+                    <button class="send-button">송금</button>
+                </div>
+
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="account-icon">
+                            <img src="t2.png" alt="신한" width="42" height="42">
+                        </div>
+                        <div class="account-details">
+                            <span class="account-amount">1,280,637,935원</span>
+                            <span class="account-name">신한 주거래 우대통장(저축예금)</span>
+                        </div>
+                    </div>
+                    <button class="send-button">송금</button>
+                </div>
+
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="account-icon">
+                            <img src="t3.png" alt="빅팟" width="42" height="42">
+                        </div>
+                        <div class="account-details">
+                            <span class="account-amount">642,544,824원</span>
+                            <span class="account-name">빅팟통장(BigPot)</span>
+                        </div>
+                    </div>
+                    <button class="send-button">송금</button>
+                </div>
+
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="account-icon">
+                            <img src="t2.png" alt="신한" width="42" height="42">
+                        </div>
+                        <div class="account-details">
+                            <span class="account-amount">1,424,472,846원</span>
+                            <span class="account-name">신한 주거래 SOHO사업자통장(저축예금)</span>
+                        </div>
+                    </div>
+                    <button class="send-button">송금</button>
+                </div>
+
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="account-icon">
+                            <img src="t5.png" alt="투자" width="42" height="42">
+                        </div>
+                        <div class="account-details">
+                            <span class="account-amount">6,752,078,801원
+				 <span class="growth-positive">+14.8%</span></span></span>
+                            <span class="account-name">투자 모아보기 · 9개</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-stats">
+                <div class="stat-item">
+                    <span>대출 2</span>
+                </div>
+                <div class="stat-item">
+                    <span>증권 1</span>
+                </div>
+                <div class="stat-item">
+                    <span>계좌 13</span>
+                </div>
+                <div class="stat-item">
+                    <span>전체 23</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card money-spent">
+
+            <div class="account-info">
+                        <div class="account-icon">
+                            <img src="t6.png" alt="투자" width="42" height="42">
+                        </div>
+                        <div class="account-details">
+                            <span class="account-amount">7,703,550원</span>
+                            <span class="account-name">1월에 쓴 돈</span>
+
+                        </div>
+     
+
+                </div>
+            </div>
+
+       <div class="card money-spent">
+
+            <div class="account-info">
+                        <div class="account-icon">
+                            <img src="p1.png" alt="연결하고 내역보기" width="42" height="42">
+                        </div>
+                        <div class="account-details">
+                            <span class="account-amount">연결하고 내역보기</span>
+                            <span class="account-name">내 모든 카드</span>
+
+                        </div>
+     
+
+                </div>
+            </div>
+
+
+
+
+        <div class="suggestion-section">
+            <div class="date-label">&nbsp 1월 11일 토요일</div>
+            <div class="suggestion-title">&nbsp 배지호님을 위해 준비했어요</div>
+
+            <div class="action-buttons">
+                <button class="action-button">  신용대출 한도
+                    <img src="x1.png" alt="대출" width="24" height="24">
+                    
+                </button>
+                <button class="action-button">
+  숨은 환급액 찾기
+                    <img src="x2.png" alt="검색" width="24" height="24">
+                   
+                </button>
+            </div>
+
+
+
+            <div class="menu-list">
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <img src="x3.png" alt="차" width="24" height="24">
+                        <span>차 시세</span>
+                    </div>
+                    <img src="fx.png" alt="더보기" width="16" height="16">
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <img src="x4.png" alt="대출" width="24" height="24">
+                        <span>신용대출 갈아타기</span>
+                    </div>
+                    <img src="fx.png" alt="더보기" width="16" height="16">
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <img src="x6.png" alt="플러스" width="24" height="24">
+                        <span>신용플러스</span>
+                    </div>
+                    <img src="fx.png" alt="더보기" width="16" height="16">
+                </div>
+            </div>
+        </div>
+
+        <nav class="tab-bar">
+            <a href="#" class="tab-item active">
+                <img src="b1.png" alt="홈" width="30" height="30">
+<span style="font-size:10pt"> 홈 </span>
+
+
+            </a>
+            <a href="#" class="tab-item">
+                <img src="b2.png" alt="혜택" width="28" height="28">
+<span style="font-size:10pt"> 혜택 </span>            </a>
+            <a href="#" class="tab-item">
+                <img src="b3.png" alt="토스쇼핑" width="28" height="28">
+<span style="font-size:10pt"> 토스쇼핑 </span>            </a>
+              <a href="#" class="tab-item">
+                <img src="b4.png" alt="주식" width="28" height="28">
+                <span style="font-size:10pt"> 주식 </span>
+
+
+
